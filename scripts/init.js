@@ -10,13 +10,7 @@ Hooks.once("init", async () => {
   registerSettings(MODULE_ID);
 });
 
-Hooks.once("canvasReady", (canvas) => {
-  
-});
-
-
 Hooks.once("ready", async () => {
-
   // get swing once on startup
   if (game.settings.get(MODULE_ID, "swing-glow-enabled")) {
     game.canvas.tokens.placeables.forEach((token) => {
@@ -30,7 +24,6 @@ Hooks.once("ready", async () => {
     game.canvas.tokens.placeables.forEach((token) => {
       GlowManager.deleteTokenGlow(token);
     });
-    
   }
 
   Hooks.on("updateActor", (actor,updates,metadata,id) => {
