@@ -39,7 +39,7 @@ export function updateTokenGlow({
   if (!game.settings.get(MODULE_ID, "swing-glow-enabled")) return;
 
   // const targetTokens = [].concat(actor.getTokens());
-  if (!newSwingAttributeId) newSwingAttributeId = actor.system.swing.attributeId;
+  if (!newSwingAttributeId) newSwingAttributeId = actor?.system?.swing?.attributeId ?? AttributeIdNoSwing;
 
   if (newSwingAttributeId === AttributeIdNoSwing) {
     for (const token of targetTokens) {
