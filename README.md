@@ -13,7 +13,7 @@ Paste this link into the "Install Module" Dialog's "Manifest URL" field and clic
 Then enable the module in your world.
 
 ### Manual
-[Download this repo as a zip](https://github.com/konokonekonoko/sentiment-swing-glow/archive/refs/heads/main.zip) and unzip it in your `FoundryVTT/Data/modules` directory. Usually `%user%\AppData\Local\FoundryVTT\Data` on Windows or `/home/$USER/.local/share/FoundryVTT` on Windows.
+[Download this repo as a zip](https://github.com/konokonekonoko/sentiment-swing-glow/archive/refs/heads/main.zip) and unzip it in your `FoundryVTT/Data/modules` directory. Usually `%user%\AppData\Local\FoundryVTT\Data` on Windows or `/home/$USER/.local/share/FoundryVTT` on Linux.
 The directory structure should be as follows:
 ```
 FoundryVTT/
