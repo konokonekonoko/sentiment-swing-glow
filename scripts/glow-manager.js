@@ -25,10 +25,10 @@ export function updateActorGlow(actor, newSwingAttributeId) {
 export function deleteTokenGlow(token) {
   token.mesh ??= {};
   const previousGlows =
-    token.mesh?.filters?.filter((f) => f.filterId === "swing-glow") || [];
+    token.mesh?.filters?.filter((f) => f.filterName === "swing-glow") || [];
   if (previousGlows?.length === 0) return;
   token.mesh.filters =
-    token.mesh?.filters?.filter((f) => f.filterId !== "swing-glow") || [];
+    token.mesh?.filters?.filter((f) => f.filterName !== "swing-glow") || [];
 }
 
 export function updateTokenGlow({
@@ -38,7 +38,6 @@ export function updateTokenGlow({
 } = {}) {
   if (!game.settings.get(MODULE_ID, "swing-glow-enabled")) return;
 
-  // const targetTokens = [].concat(actor.getTokens());
   if (!newSwingAttributeId) newSwingAttributeId = actor?.system?.swing?.attributeId ?? AttributeIdNoSwing;
 
   if (newSwingAttributeId === AttributeIdNoSwing) {
@@ -63,7 +62,8 @@ export function updateTokenGlow({
     outerStrength: glowOuterStrength,
     innerStrength: 0,
   });
-  newSwing.filterId = "swing-glow";
+  newSwing.filterName = "swing-glow";
+  newSwing.attributeId = newSwingAttributeId;
 
   for (const token of targetTokens) {
     token.mesh ??= {};
@@ -73,7 +73,7 @@ export function updateTokenGlow({
     if (filters.includes(newSwing)) continue;
 
     // else, remove old swing
-    const newFilters = filters.filter((f) => f.filterId !== "swing-glow");
+    const newFilters = filters.filter((f) => f.filterName !== "swing-glow");
     newFilters.push(newSwing);
     token.mesh.filters = newFilters;
   }

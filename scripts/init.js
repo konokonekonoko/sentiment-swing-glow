@@ -30,3 +30,14 @@ Hooks.once("ready", async () => {
     GlowManager.checkTokenGlowUpdate(actor,updates);
   })
 });
+
+const placedTokens = new Set();
+Hooks.on("drawToken", async (token) => {
+  if (placedTokens.has(token)) return;
+  if (!token.actor) return;
+  GlowManager.updateTokenGlow({
+    actor: token.actor,
+    targetTokens: [token]
+  });
+  placedTokens.add(token)
+});
