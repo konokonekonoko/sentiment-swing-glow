@@ -14,14 +14,14 @@ Then enable the module in your world.
 
 ### Manual
 #### Download
-[Download this repo as a zip](https://github.com/konokonekonoko/sentiment-swing-glow/archive/refs/heads/main.zip) and unzip it in your `FoundryVTT/Data/modules` directory. Usually `%user%\AppData\Local\FoundryVTT\Data\modules` on Windows or `/home/$USER/.local/share/FoundryVTT/Data/modules` on Linux.
+[Download this repo as a zip](https://github.com/konokonekonoko/sentiment-swing-glow/archive/refs/heads/main.zip) and unzip it in your `FoundryVTT/Data/modules` directory. Usually `%user%\AppData\Local\FoundryVTT\Data\modules` on Windows or `/home/$USER/.local/share/FoundryVTT/Data/modules` on Linux. Then remove the `-main` from the folder name.
 
 The directory structure should be as follows:
 ```
 FoundryVTT/
 └ Data/
   ├ modules/
-  │ ├ sentiment-swing-glow-main/
+  │ ├ sentiment-swing-glow/
   │ └ [other module directories]/
   └ [other directories]/
 ```
