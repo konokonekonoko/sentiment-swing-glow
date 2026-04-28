@@ -1,4 +1,4 @@
-export default function registerSettings(id) {
+export default function registerSettings(id, SwingGlowManager) {
   // Global Scope Settings
   game.settings.register(id, "swing-glow-enabled-default", {
     name: "Display Swing Glow Default",
@@ -39,6 +39,20 @@ export default function registerSettings(id) {
     },
   });
 
+  game.settings.register(id, "swing-glow-quality-default", {
+    name: "Swing Glow Intensity Quality",
+    hint: "Swing Glow Quality will be set to this value by default. Each client can individually adjust the Swing Glow Quality, regardless of this setting.",
+    scope: "world",
+    config: true,
+    type: Number,
+    default: 0.1,
+    range: {
+      min: 0.1,
+      max: 5.0,
+      step: 0.1,
+    },
+  });
+
   // Client Scope Settings
   game.settings.register(id, "swing-glow-enabled", {
     name: "Display Swing Glow",
@@ -49,11 +63,12 @@ export default function registerSettings(id) {
     config: true,
     type: Boolean,
     default: game.settings.get(id, "swing-glow-enabled-default"),
+    onChange: () => SwingGlowManager.reloadSettings()
   });
 
   game.settings.register(id, "swing-glow-distance", {
     name: "Swing Glow Distance",
-    hint: "How far the glow extends from the token. (You will have to change Swing once for this setting to take effect.)",
+    hint: "How far the glow extends from the token.",
     scope: "client",
     config: true,
     type: Number,
@@ -63,11 +78,12 @@ export default function registerSettings(id) {
       max: 50,
       step: 1,
     },
+    onChange: () => SwingGlowManager.reloadSettings()
   });
 
   game.settings.register(id, "swing-glow-intensity", {
     name: "Swing Glow Intensity",
-    hint: "How intense the Swing Glow is. (You will have to change Swing once for this setting to take effect.)",
+    hint: "How intense the Swing Glow is.",
     scope: "client",
     config: true,
     type: Number,
@@ -77,5 +93,21 @@ export default function registerSettings(id) {
       max: 5.0,
       step: 0.1,
     },
+    onChange: () => SwingGlowManager.reloadSettings()
+  });
+
+  game.settings.register(id, "swing-glow-quality", {
+    name: "Swing Glow Quality",
+    hint: "The quality of the swing glow. 0.1 should be fine.",
+    scope: "client",
+    config: true,
+    type: Number,
+    default: game.settings.get(id, "swing-glow-quality-default"),
+    range: {
+      min: 0.05,
+      max: 1,
+      step: 0.05,
+    },
+    onChange: () => SwingGlowManager.reloadSettings()
   });
 }
