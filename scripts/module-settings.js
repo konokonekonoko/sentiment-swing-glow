@@ -98,15 +98,15 @@ export default function registerSettings(id, SwingGlowManager) {
 
   game.settings.register(id, "swing-glow-quality", {
     name: "Swing Glow Quality",
-    hint: "The quality of the swing glow. 0.1 should be fine.",
+    hint: "The quality of the swing glow. The higher, the less jagged the glow, and less performant.",
     scope: "client",
     config: true,
     type: Number,
     default: game.settings.get(id, "swing-glow-quality-default"),
     range: {
-      min: 0.05,
+      min: 0.01,
       max: 1,
-      step: 0.05,
+      step: 0.01,
     },
     onChange: () => SwingGlowManager.reloadSettings()
   });
