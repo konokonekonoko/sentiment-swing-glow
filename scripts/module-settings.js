@@ -47,9 +47,9 @@ export default function registerSettings(id, SwingGlowManager) {
     type: Number,
     default: 0.1,
     range: {
-      min: 0.1,
-      max: 5.0,
-      step: 0.1,
+      min: 0.05,
+      max: 1.0,
+      step: 0.05,
     },
   });
 
@@ -57,8 +57,7 @@ export default function registerSettings(id, SwingGlowManager) {
   game.settings.register(id, "swing-glow-enabled", {
     name: "Display Swing Glow",
     hint:
-      "This setting determines whether an outline glow matching the current swing's color is shown around tokens. " +
-      "(You will have to change Swing once for this setting to take effect.)",
+      "This setting determines whether an outline glow matching the current swing's color is shown around tokens. ",
     scope: "client",
     config: true,
     type: Boolean,
@@ -98,7 +97,7 @@ export default function registerSettings(id, SwingGlowManager) {
 
   game.settings.register(id, "swing-glow-quality", {
     name: "Swing Glow Quality",
-    hint: "The quality of the swing glow. The higher, the less jagged the glow, and less performant.",
+    hint: "The quality of the swing glow. The higher, the less jagged the glow around edges at the cost of performance.",
     scope: "client",
     config: true,
     type: Number,
