@@ -104,7 +104,7 @@ export default class SwingGlowManager {
    * Update glow filter for specified tokens
    */
   static updateGlow({ actor, targetTokens = [], newSwingAttributeId } = {}) {
-    if (!(actor && actor instanceof Actor)) {
+    if (!(actor && (actor instanceof Actor))) {
       return console.error(
         `${this.MODULE_ID} | updateGlow called on invalid actor:`,
         actor,
