@@ -1,12 +1,12 @@
 import * as Enums from "./enums.js";
 
-export default class SwingGlowManager {
-  static MODULE_ID = Enums.MODULE_ID;
-  static AttributeIdNoSwing = Enums.AttributeIdNoSwing;
+class SwingGlowManager {
+  MODULE_ID = Enums.MODULE_ID;
+  AttributeIdNoSwing = Enums.AttributeIdNoSwing;
 
-  static #settings = null;
+  #settings = null;
 
-  static init() {
+  init() {
     const settings = this.#loadSettings();
     const canvasTokens = game.canvas.tokens.placeables;
     if (settings.enabled) {
@@ -26,7 +26,7 @@ export default class SwingGlowManager {
   /**
    * Load and cache all settings
    */
-  static #loadSettings() {
+  #loadSettings() {
     if (this.#settings !== null) return this.#settings;
     this.#settings = {
       enabled: game.settings.get(this.MODULE_ID, "swing-glow-enabled") ?? false,
@@ -40,14 +40,14 @@ export default class SwingGlowManager {
   /**
    * Reset cached settings
    */
-  static resetSettingsCache() {
+  resetSettingsCache() {
     this.#settings = null;
   }
 
   /**
    * Reload settings from Foundry Settings
    */
-  static reloadSettings() {
+  reloadSettings() {
     this.resetSettingsCache();
     this.#loadSettings();
     this.init();
@@ -57,17 +57,17 @@ export default class SwingGlowManager {
   /**
    * Pretty logging
    */
-  static log(...args) {
+  log(...args) {
     console.log(`${this.MODULE_ID} |`, ...args);
   }
-  static debug(...args) {
+  debug(...args) {
     console.debug(`${this.MODULE_ID} |`, ...args);
   }
 
   /**
    * Get the tokens associated with an actor
    */
-  static #getTokens(actor) {
+  #getTokens(actor) {
     if (actor.isToken) {
       if (!(actor.token && actor.token.object)) return []
       return [actor.token.object]; // unlinked actors
@@ -78,7 +78,7 @@ export default class SwingGlowManager {
   /**
    * Check if token glow needs updating based on actor updates
    */
-  static checkTokenGlowUpdate(actor, updates) {
+  checkTokenGlowUpdate(actor, updates) {
     const newSwingAttributeId = updates?.system?.swing?.attributeId;
     if (newSwingAttributeId) {
       this.updateGlow({ actor, newSwingAttributeId });
@@ -88,7 +88,7 @@ export default class SwingGlowManager {
   /**
    * Remove glow filter from a token
    */
-  static deleteTokenGlow(token) {
+  deleteTokenGlow(token) {
     token.mesh ??= {};
     token.mesh.filters ??= [];
     const previousGlows =
@@ -103,7 +103,7 @@ export default class SwingGlowManager {
   /**
    * Update glow filter for specified tokens
    */
-  static updateGlow({ actor, targetTokens = [], newSwingAttributeId } = {}) {
+  updateGlow({ actor, targetTokens = [], newSwingAttributeId } = {}) {
     if (!(actor && (actor instanceof Actor))) {
       return console.error(
         `${this.MODULE_ID} | updateGlow called on invalid actor:`,
@@ -164,4 +164,6 @@ export default class SwingGlowManager {
       token.mesh.filters = newFilters;
     }
   }
-}
+} 
+
+export default new SwingGlowManager()
