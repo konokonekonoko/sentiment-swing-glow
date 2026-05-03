@@ -9,9 +9,9 @@ export default class SwingGlowManager {
   static init() {
     const settings = this.#loadSettings();
     const canvasTokens = game.canvas.tokens.placeables;
-    if (settings.glowEnabled) {
+    if (settings.enabled) {
       canvasTokens.forEach((token) => {
-        this.updateTokenGlow({
+        this.updateGlow({
           actor: token.actor,
           targetTokens: [token],
         });
@@ -24,19 +24,15 @@ export default class SwingGlowManager {
   }
 
   /**
-   * Load and caches all settings
+   * Load and cache all settings
    */
   static #loadSettings() {
     if (this.#settings !== null) return this.#settings;
     this.#settings = {
-      glowEnabled:
-        game.settings.get(this.MODULE_ID, "swing-glow-enabled") ?? false,
-      glowDistance:
-        game.settings.get(this.MODULE_ID, "swing-glow-distance") || 15,
-      glowIntensity:
-        game.settings.get(this.MODULE_ID, "swing-glow-intensity") || 2,
-      glowQuality:
-        game.settings.get(this.MODULE_ID, "swing-glow-quality") || 0.1,
+      enabled: game.settings.get(this.MODULE_ID, "swing-glow-enabled") ?? false,
+      distance: game.settings.get(this.MODULE_ID, "swing-glow-distance") || 15,
+      intensity: game.settings.get(this.MODULE_ID, "swing-glow-intensity") || 2,
+      quality: game.settings.get(this.MODULE_ID, "swing-glow-quality") || 0.1,
     };
     return this.#settings;
   }
@@ -54,26 +50,27 @@ export default class SwingGlowManager {
   static reloadSettings() {
     this.resetSettingsCache();
     this.#loadSettings();
-    this.init()
-    this.log("Reloading Settings",this.#settings)
+    this.init();
+    this.log("Reloading Settings", this.#settings);
   }
 
   /**
    * Pretty logging
    */
   static log(...args) {
-    console.log(`${this.MODULE_ID} |`,...args);
+    console.log(`${this.MODULE_ID} |`, ...args);
   }
   static debug(...args) {
-    console.debug(`${this.MODULE_ID} |`,...args);
+    console.debug(`${this.MODULE_ID} |`, ...args);
   }
 
   /**
    * Get the tokens associated with an actor
    */
   static #getTokens(actor) {
-    if (actor.isToken && actor.token) {
-      return actor.token.object; // unlinked actors
+    if (actor.isToken) {
+      if (!(actor.token && actor.token.object)) return []
+      return [actor.token.object]; // unlinked actors
     }
     return actor.getActiveTokens(); // linked actors
   }
@@ -84,16 +81,8 @@ export default class SwingGlowManager {
   static checkTokenGlowUpdate(actor, updates) {
     const newSwingAttributeId = updates?.system?.swing?.attributeId;
     if (newSwingAttributeId) {
-      this.updateActorGlow(actor, newSwingAttributeId);
+      this.updateGlow({ actor, newSwingAttributeId });
     }
-  }
-
-  /**
-   * Handle actor input for `updateTokenGlow`
-   */
-  static updateActorGlow(actor, newSwingAttributeId) {
-    const targetTokens = [].concat(this.#getTokens(actor));
-    this.updateTokenGlow({ actor, targetTokens, newSwingAttributeId });
   }
 
   /**
@@ -114,10 +103,22 @@ export default class SwingGlowManager {
   /**
    * Update glow filter for specified tokens
    */
-  static updateTokenGlow({ actor, targetTokens, newSwingAttributeId } = {}) {
+  static updateGlow({ actor, targetTokens = [], newSwingAttributeId } = {}) {
+    if (!(actor && actor instanceof Actor)) {
+      return console.error(
+        `${this.MODULE_ID} | updateGlow called on invalid actor:`,
+        actor,
+        `\nTarget Tokens:`,
+        targetTokens
+      );
+    }
     const settings = this.#loadSettings();
+    if (!settings.enabled) return;
 
-    if (!settings.glowEnabled) return;
+    if (!targetTokens?.length) {
+      targetTokens = this.#getTokens(actor);
+    }
+    if (!targetTokens?.length) return;
 
     if (!newSwingAttributeId) {
       newSwingAttributeId =
@@ -128,6 +129,7 @@ export default class SwingGlowManager {
       for (const token of targetTokens) {
         this.deleteTokenGlow(token);
       }
+      this.debug("Deleting token glow for", actor);
       return;
     }
 
@@ -136,15 +138,15 @@ export default class SwingGlowManager {
 
     const newSwing = new PIXI.filters.GlowFilter({
       color: attribute.system.color,
-      quality: settings.glowQuality,
-      distance: settings.glowDistance,
-      outerStrength: settings.glowIntensity,
+      quality: settings.quality,
+      distance: settings.distance,
+      outerStrength: settings.intensity,
       innerStrength: 0,
     });
     newSwing.filterName = this.MODULE_ID;
     newSwing.attributeId = newSwingAttributeId;
 
-    this.debug("Updating token glow for", actor, "with", newSwing)
+    this.debug("Updating token glow for", actor, "with", newSwing);
 
     for (const token of targetTokens) {
       token.mesh ??= {};

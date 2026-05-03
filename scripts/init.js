@@ -22,7 +22,7 @@ const placedTokens = new Set();
 Hooks.on("drawToken", async (token) => {
   if (placedTokens.has(token)) return;
   if (!token.actor) return;
-  SwingGlowManager.updateTokenGlow({
+  SwingGlowManager.updateGlow({
     actor: token.actor,
     targetTokens: [token],
   });
