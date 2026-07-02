@@ -26,6 +26,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        path: ${{ github.event.repository.name }}
 
       - name: Create zip file
         run: |
@@ -37,8 +38,7 @@ jobs:
             fi
           done <<< "$EXCLUDE_PATTERNS"
 
-          # Create the zip file
-          eval "zip -r $ZIP_FILENAME . $EXCLUDE_FLAGS"
+          eval "zip -r $ZIP_FILENAME ${{ github.event.repository.name }} $EXCLUDE_FLAGS"
 
       - name: Read module.json
         id: module
@@ -63,7 +63,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ${{ env.ZIP_FILENAME }}
-          tag_name: auto-release-${{ github.run_number }}
+          tag_name: auto-release-${{ github.run_number }}-v${{ steps.module.outputs.version }}
           body: |
             # Version ${{ steps.module.outputs.version }}
             ## Foundry VTT Compatibility Information
