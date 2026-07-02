@@ -82,7 +82,7 @@ jobs:
             ## Foundry VTT Compatibility Information
             **Verifed:** ${{ steps.module.outputs.ver_compatibility }}
             **Minimum:** ${{ steps.module.outputs.min_compatibility }}
-            **Maximum:** ${{ steps.module.outputs.min_compatibility }}
+            **Maximum:** ${{ steps.module.outputs.max_compatibility }}
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
