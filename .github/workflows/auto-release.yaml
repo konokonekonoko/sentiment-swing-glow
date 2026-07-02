@@ -26,10 +26,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        path: ${{ github.event.repository.name }}
 
       - name: Create zip file
         run: |
+          REPO_NAME="${{ github.event.repository.name }}"
           # Create exclude flags from EXCLUDE_PATTERNS
           EXCLUDE_FLAGS=""
           while IFS= read -r pattern; do
@@ -38,7 +38,18 @@ jobs:
             fi
           done <<< "$EXCLUDE_PATTERNS"
 
-          eval "zip -r $ZIP_FILENAME ${{ github.event.repository.name }} $EXCLUDE_FLAGS"
+          eval "zip -r temp.zip .  $EXCLUDE_FLAGS"
+          
+          # Jank to get it inside the folder
+          mkdir -p "$REPO_NAME"
+
+          unzip -q temp.zip -d "$REPO_NAME/"
+          
+          # Create final zip
+          zip -r "$ZIP_FILENAME" "$REPO_NAME/"
+          
+          # Clean up
+          rm temp.zip
 
       - name: Read module.json
         id: module
