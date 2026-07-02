@@ -64,11 +64,18 @@ jobs:
           echo "max_compatibility=$MAX_COMPATIBILITY" >> $GITHUB_OUTPUT
 
 
-      - name: Upload artifact
+      - name: Upload release zip
         uses: actions/upload-artifact@v4
         with:
           name: release-zip
           path: ${{ env.ZIP_FILENAME }}
+
+      - name: Upload module.json
+        uses: actions/upload-artifact@v4
+        with:
+          name: module-json
+          path: module.json
+
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
