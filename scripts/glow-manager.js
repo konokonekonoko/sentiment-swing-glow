@@ -49,7 +49,7 @@ class SwingGlowManager {
    */
   reloadSettings() {
     this.resetSettingsCache();
-    this.#loadSettings();
+    // this.#loadSettings();
     this.init();
     this.log("Reloading Settings", this.#settings);
   }
