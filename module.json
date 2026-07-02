@@ -8,7 +8,7 @@
     }
   ],
   "url": "https://github.com/konokonekonoko/sentiment-swing-glow",
-  "manifest": "https://github.com/konokonekonoko/sentiment-swing-glow/releases/latest/download/module.json",
+  "manifest": "https://raw.githubusercontent.com/konokonekonoko/sentiment-swing-glow/main/module.json",
   "download": "https://github.com/konokonekonoko/sentiment-swing-glow/releases/latest/download/sentiment-swing-glow.zip",
   "version": "1.1.2",
   "compatibility": {
