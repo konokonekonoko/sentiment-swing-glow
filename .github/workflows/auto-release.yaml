@@ -1,0 +1,73 @@
+name: Auto Release
+
+on:
+  push:
+    paths:
+      - 'module.json'
+    branches:
+      - main
+
+jobs:
+  zip-repo:
+    runs-on: ubuntu-latest
+    
+    env:
+      # Excluded files and directories
+      EXCLUDE_PATTERNS: |
+        .git
+        .gitignore
+        .github
+        img
+      ZIP_FILENAME: ${{ github.event.repository.name }}.zip
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create zip file
+        run: |
+          # Create exclude flags from EXCLUDE_PATTERNS
+          EXCLUDE_FLAGS=""
+          while IFS= read -r pattern; do
+            if [ -n "$pattern" ]; then
+              EXCLUDE_FLAGS="$EXCLUDE_FLAGS -x '$pattern' '$pattern/*'"
+            fi
+          done <<< "$EXCLUDE_PATTERNS"
+
+          # Create the zip file
+          eval "zip -r $ZIP_FILENAME . $EXCLUDE_FLAGS"
+
+      - name: Read module.json
+        id: module
+        run: |
+          VERSION=$(jq -r '.version' module.json)
+          MIN_COMPATIBILITY=$(jq -r '.compatibility.minimum // "Not Specified"' module.json)
+          VER_COMPATIBILITY=$(jq -r '.compatibility.verified // "Not Specified"' module.json)
+          MAX_COMPATIBILITY=$(jq -r '.compatibility.maximum // "Not Specified"' module.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "min_compatibility=$MIN_COMPATIBILITY" >> $GITHUB_OUTPUT
+          echo "ver_compatibility=$VER_COMPATIBILITY" >> $GITHUB_OUTPUT
+          echo "max_compatibility=$MAX_COMPATIBILITY" >> $GITHUB_OUTPUT
+
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-zip
+          path: ${{ env.ZIP_FILENAME }}
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.ZIP_FILENAME }}
+          tag_name: auto-release-${{ github.run_number }}
+          body: |
+            # Version ${{ steps.module.outputs.version }}
+            ## Foundry VTT Compatibility Information
+            **Verifed:** ${{ steps.module.outputs.ver_compatibility }}
+            **Minimum:** ${{ steps.module.outputs.min_compatibility }}
+            **Maximum:** ${{ steps.module.outputs.min_compatibility }}
+          draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
